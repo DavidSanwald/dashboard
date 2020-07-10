@@ -1,37 +1,37 @@
-import React from "react";
-import { Nav } from "shards-react";
+import React from "react"
+import { Nav } from "shards-react"
 
-import SidebarNavItem from "./SidebarNavItem";
-import { Store } from "../../../flux";
+import SidebarNavItem from "./SidebarNavItem"
+import { Store } from "../../../flux"
 
 class SidebarNavItems extends React.Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      navItems: Store.getSidebarItems()
-    };
+      navItems: Store.getSidebarItems(),
+    }
 
-    this.onChange = this.onChange.bind(this);
+    this.onChange = this.onChange.bind(this)
   }
 
   componentWillMount() {
-    Store.on('update-ui', this.onChange);
+    Store.on("update-ui", this.onChange)
   }
 
   componentWillUnmount() {
-    Store.removeListener('update-ui', this.onChange);
+    Store.removeListener("update-ui", this.onChange)
   }
 
   onChange() {
     this.setState({
       ...this.state,
-      navItems: Store.getSidebarItems()
-    });
+      navItems: Store.getSidebarItems(),
+    })
   }
 
   render() {
-    const { navItems: items } = this.state;
+    const { navItems: items } = this.state
     return (
       <div className="nav-wrapper">
         {items.map((nav, idx) => (
@@ -51,4 +51,4 @@ class SidebarNavItems extends React.Component {
   }
 }
 
-export default SidebarNavItems;
+export default SidebarNavItems

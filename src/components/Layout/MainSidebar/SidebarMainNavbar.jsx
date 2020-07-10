@@ -1,23 +1,23 @@
-import React from "react";
-import { Navbar, NavbarBrand } from "shards-react";
+import React from "react"
+import { Navbar, NavbarBrand } from "shards-react"
 
-import { Dispatcher, Constants } from "../../../flux";
+import { Dispatcher, Constants } from "../../../flux"
 
 class SidebarMainNavbar extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
+    this.handleToggleSidebar = this.handleToggleSidebar.bind(this)
   }
 
   handleToggleSidebar() {
     Dispatcher.dispatch({
-      actionType: Constants.TOGGLE_SIDEBAR
-    });
+      actionType: Constants.TOGGLE_SIDEBAR,
+    })
   }
 
   render() {
-    const { hideLogoText } = this.props;
+    const { hideLogoText } = this.props
     return (
       <div className="main-navbar">
         <Navbar
@@ -34,7 +34,7 @@ class SidebarMainNavbar extends React.Component {
                 id="main-logo"
                 className="d-inline-block align-top"
                 style={{ maxWidth: "50px" }}
-                src={require('../../../images/jina-light.svg')}
+                src={require("../../../images/jina-light.svg")}
                 alt="Jina Dashboard"
               />
             </div>
@@ -48,8 +48,8 @@ class SidebarMainNavbar extends React.Component {
           </a>
         </Navbar>
       </div>
-    );
+    )
   }
 }
 
-export default SidebarMainNavbar;
+export default SidebarMainNavbar

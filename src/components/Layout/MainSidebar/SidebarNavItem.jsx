@@ -1,37 +1,35 @@
-import React from "react";
-import { NavLink as RouteNavLink } from "react-router-dom";
+import React from "react"
+import { NavLink as RouteNavLink } from "react-router-dom"
 import {
   NavItem,
   NavLink,
   DropdownMenu,
   DropdownItem,
-  Collapse
-} from "shards-react";
-import { Dispatcher, Constants } from "../../../flux";
+  Collapse,
+} from "shards-react"
+import { Dispatcher, Constants } from "../../../flux"
 
 class SidebarNavItem extends React.Component {
   constructor(props) {
-    super(props);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
+    super(props)
+    this.toggleDropdown = this.toggleDropdown.bind(this)
   }
 
   toggleDropdown(item) {
     Dispatcher.dispatch({
       actionType: Constants.TOGGLE_SIDEBAR_DROPDOWN,
-      payload: item
-    });
+      payload: item,
+    })
   }
 
   render() {
-    const { item } = this.props;
-    const hasSubItems = item.items && item.items.length;
-    const path = window.location.hash.substring(2, window.location.hash.length);
+    const { item } = this.props
+    const hasSubItems = item.items && item.items.length
+    const path = window.location.hash.substring(2, window.location.hash.length)
     let active = false
     item.matches.map(match => {
-      if (path.startsWith(match))
-        active = true
+      if (path.startsWith(match)) active = true
     })
-
 
     return (
       <NavItem style={{ position: "relative" }}>
@@ -57,7 +55,12 @@ class SidebarNavItem extends React.Component {
           )}
         </NavLink>
         {hasSubItems && (
-          <Collapse tag={DropdownMenu} small open={item.open} style={{ top: 0 }}>
+          <Collapse
+            tag={DropdownMenu}
+            small
+            open={item.open}
+            style={{ top: 0 }}
+          >
             {item.items.map((subItem, idx) => (
               <DropdownItem key={idx} tag={RouteNavLink} to={subItem.to}>
                 {subItem.title}
@@ -66,8 +69,8 @@ class SidebarNavItem extends React.Component {
           </Collapse>
         )}
       </NavItem>
-    );
+    )
   }
 }
 
-export default SidebarNavItem;
+export default SidebarNavItem

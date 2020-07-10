@@ -1,9 +1,9 @@
-import React from "react";
-import { Container, Row, Col } from "shards-react";
+import React from "react"
+import { Container, Row, Col } from "shards-react"
 
-import MainNavbar from "../components/Layout/MainNavbar/MainNavbar";
-import MainSidebar from "../components/Layout/MainSidebar/MainSidebar";
-import MainFooter from "../components/Layout/MainFooter";
+import MainNavbar from "../components/Layout/MainNavbar/MainNavbar"
+import MainSidebar from "../components/Layout/MainSidebar/MainSidebar"
+import MainFooter from "../components/Layout/MainFooter"
 
 const DefaultLayout = ({ children, noNavbar, noFooter }) => (
   <Container fluid>
@@ -22,6 +22,6 @@ const DefaultLayout = ({ children, noNavbar, noFooter }) => (
       </Col>
     </Row>
   </Container>
-);
+)
 
-export default DefaultLayout;
+export default DefaultLayout

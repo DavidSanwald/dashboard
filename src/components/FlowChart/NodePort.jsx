@@ -1,5 +1,5 @@
-import React from "react";
-import {Badge} from "react-bootstrap";
+import React from "react"
+import { Badge } from "react-bootstrap"
 
 class ChartNode extends React.Component {
   render = () => {
@@ -11,4 +11,4 @@ class ChartNode extends React.Component {
   }
 }
 
-export default ChartNode;
+export default ChartNode

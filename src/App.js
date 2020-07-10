@@ -1,12 +1,12 @@
-import React from "react";
-import { HashRouter as Router, Route } from "react-router-dom";
+import React from "react"
+import { HashRouter as Router, Route } from "react-router-dom"
 
-import routes from "./routes";
-import withTracker from "./withTracker";
+import routes from "./routes"
+import withTracker from "./withTracker"
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./assets/main.scss";
-import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css"
+import "./assets/main.scss"
+import "./App.css"
 
 export default () => (
   <Router basename={"/"}>
@@ -22,11 +22,11 @@ export default () => (
                 <route.layout {...props}>
                   <route.component {...props} />
                 </route.layout>
-              );
+              )
             })}
           />
-        );
+        )
       })}
     </div>
   </Router>
-);
+)

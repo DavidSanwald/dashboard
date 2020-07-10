@@ -1,6 +1,6 @@
-import React from "react";
-import { Container, Row, Nav, NavItem, NavLink } from "shards-react";
-import { Link } from "react-router-dom";
+import React from "react"
+import { Container, Row, Nav, NavItem, NavLink } from "shards-react"
+import { Link } from "react-router-dom"
 
 const MainFooter = ({ contained, menuItems, copyright }) => (
   <footer className="main-footer d-flex p-2 px-3 bg-white border-top">
@@ -17,7 +17,7 @@ const MainFooter = ({ contained, menuItems, copyright }) => (
       </Row>
     </Container>
   </footer>
-);
+)
 
 MainFooter.defaultProps = {
   contained: false,
@@ -25,29 +25,29 @@ MainFooter.defaultProps = {
   menuItems: [
     {
       title: "Home",
-      to: "https://jina.ai"
+      to: "https://jina.ai",
     },
     {
       title: "Opensource",
-      to: "https://opensource.jina.ai"
+      to: "https://opensource.jina.ai",
     },
     {
       title: "Learn",
-      to: "https://docs.jina.ai"
+      to: "https://docs.jina.ai",
     },
     {
       title: "Community",
-      to: "https://twitter.com/JinaAI_"
+      to: "https://twitter.com/JinaAI_",
     },
     {
       title: "Jobs",
-      to: "https://www.linkedin.com/company/jinaai/jobs/"
+      to: "https://www.linkedin.com/company/jinaai/jobs/",
     },
     {
       title: "Privacy & Terms",
-      to: "https://github.com/jina-ai/legal"
-    }
-  ]
-};
+      to: "https://github.com/jina-ai/legal",
+    },
+  ],
+}
 
-export default MainFooter;
+export default MainFooter
