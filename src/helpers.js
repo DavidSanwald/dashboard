@@ -112,44 +112,54 @@ export function formatForFlowchart(pods, canvas) {
   return formatted
 }
 
+const getNeededBy = ({ to: { nodeId } }) => nodeId
+const getNeed = ({ from: { nodeId } }) => nodeId
+const decodePropValue = (propName, propValue) =>
+  propertyTypes[propName] === "bool" ? propValue === "true" : propValue
+const unpackIfLengthOne = arr =>
+  Array.isArray(arr) && arr.length === 1 ? arr[0] : arr
+
 export function formatAsYAML(chart) {
   console.log("formatAsYAML input: ", chart)
-  let output = {
-    with: chart.with || {},
-    pods: {},
-  }
-  output.with.board = { canvas: {} }
-  Object.keys(chart.nodes).map(id => {
-    const node = chart.nodes[id]
+  const { with: chartWith, nodes, links } = chart
 
-    if (!node.label) return
-
-    output.pods[node.label] = {}
-
-    Object.keys(node.properties).map(propId => {
-      let type = propertyTypes[propId]
-      if (type === "bool") {
-        output.pods[node.label][propId] = node.properties[propId] == "true"
-      } else if (type === "int")
-        output.pods[node.label][propId] = parseInt(node.properties[propId])
-      else output.pods[node.label][propId] = node.properties[propId]
-    })
-    output.with.board.canvas[node.label] = {
-      x: node.position.x,
-      y: node.position.y,
+  const needsByPodLabel = Object.values(links).reduce((acc, curr) => {
+    const neededBy = getNeededBy(curr)
+    if (!acc[neededBy]) {
+      acc[neededBy] = []
     }
-  })
-  Object.keys(chart.links).map(id => {
-    const link = chart.links[id]
-    const nodeFrom = chart.nodes[link.from.nodeId].label
-    const nodeTo = chart.nodes[link.to.nodeId].label
-    if (!nodeFrom || !nodeTo) return
-    if (output.pods[nodeTo].needs) {
-      if (!Array.isArray(output.pods[nodeTo].needs))
-        output.pods[nodeTo].needs = [output.pods[nodeTo].needs]
-      output.pods[nodeTo].needs.push(nodeFrom)
-    } else output.pods[nodeTo].needs = nodeFrom
-  })
+    acc[neededBy].push(getNeed(curr))
+    return acc
+  }, {})
+
+  const pods = Object.values(nodes).reduce((acc, node) => {
+    const { label } = node
+    if (!label) return acc
+
+    const podProperties = Object.entries(node.properties).reduce(
+      (acc, [key, propValue]) => {
+        acc[key] = decodePropValue(key, propValue)
+        return acc
+      },
+      {}
+    )
+    if (needsByPodLabel[label]) {
+      podProperties.needs = unpackIfLengthOne(needsByPodLabel[label])
+    }
+
+    acc[label] = { ...podProperties }
+    return acc
+  }, {})
+
+  const canvas = Object.values(nodes).reduce((acc, node) => {
+    const {
+      position: { x, y },
+    } = node
+    acc[node.label] = { x, y }
+    return acc
+  }, {})
+
+  const output = { with: { ...chartWith, board: { canvas } }, pods }
   return `!Flow\n${YAML.stringify(output)}`
 }
 
