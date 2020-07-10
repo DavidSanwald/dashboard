@@ -2,9 +2,6 @@ const YAML = require("yaml")
 const settings = require("./settings")
 const propertyList = require("./data/properties.json")
 
-const propertyTypes = {}
-propertyList.map(prop => (propertyTypes[prop.name] = prop.type))
-
 export function copyToClipboard(str) {
   const temp = document.createElement("textarea")
   temp.value = str
@@ -111,6 +108,11 @@ export function formatForFlowchart(pods, canvas) {
 
   return formatted
 }
+
+const propertyTypes = propertyList.reduce((acc, curr) => {
+  acc[curr.name] = curr.type
+  return acc
+}, {})
 
 const getNeededBy = ({ to: { nodeId } }) => nodeId
 const getNeed = ({ from: { nodeId } }) => nodeId
