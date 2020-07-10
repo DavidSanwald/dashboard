@@ -34,7 +34,7 @@ const flow1 = {
         },
         properties: {
           yaml_path: "$RESOURCE_DIR/helloworld.crafter.yml",
-          replicas: "$REPLICAS",
+          replicas: 2,
           read_only: true,
         },
         depth: 0,
@@ -112,7 +112,7 @@ const flow1 = {
         },
         properties: {
           yaml_path: "$RESOURCE_DIR/helloworld.encoder.yml",
-          replicas: "$REPLICAS",
+          replicas: 2,
         },
         depth: 1,
         size: {
@@ -151,7 +151,7 @@ const flow1 = {
         },
         properties: {
           yaml_path: "$RESOURCE_DIR/helloworld.indexer.chunk.yml",
-          replicas: "$SHARDS",
+          replicas: 2,
           separated_workspace: true,
         },
         depth: 2,
@@ -318,18 +318,18 @@ with:
 pods:
   chunk_seg:
     yaml_path: $RESOURCE_DIR/helloworld.crafter.yml
-    replicas: .nan
+    replicas: 2
     read_only: false
   doc_idx:
     yaml_path: $RESOURCE_DIR/helloworld.indexer.doc.yml
     needs: chunk_seg
   encode:
     yaml_path: $RESOURCE_DIR/helloworld.encoder.yml
-    replicas: .nan
+    replicas: 2
     needs: chunk_seg
   chunk_idx:
     yaml_path: $RESOURCE_DIR/helloworld.indexer.chunk.yml
-    replicas: .nan
+    replicas: 2
     separated_workspace: false
     needs: encode
   join_all:
