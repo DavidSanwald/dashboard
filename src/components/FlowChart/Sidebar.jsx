@@ -103,6 +103,7 @@ class FlowChartSidebar extends React.Component {
                 <div key={property.name} className="property-item mb-2">
                   <p className="property-label mb-1">{property.name}</p>
                   <FormControl
+                    type={property.type === "int" ? "number" : "text"}
                     spellCheck={false}
                     placeholder={property.type}
                     value={node.newProperties[property.name] || ""}
