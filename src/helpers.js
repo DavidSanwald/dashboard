@@ -14,6 +14,7 @@ export function copyToClipboard(str) {
   document.body.removeChild(temp);
   return;
 }
+
 export function parseYAML(yamlSTR) {
   try {
     const data = YAML.parse(yamlSTR);
@@ -147,7 +148,8 @@ export function formatAsYAML(chart) {
     Object.keys(node.properties).forEach((propId) => {
       let type = propertyTypes[propId];
       if (type === "bool") {
-        output.pods[node.label][propId] = String(node.properties[propId]) === "true";
+        output.pods[node.label][propId] =
+          String(node.properties[propId]) === "true";
       } else if (type === "int")
         output.pods[node.label][propId] = parseInt(node.properties[propId]);
       else output.pods[node.label][propId] = node.properties[propId];
@@ -213,4 +215,10 @@ function getNodeDepth(nodes, currentId, currentDepth) {
   }
 
   return currentDepth + longestDepth;
+}
+
+export function yamlStringToFlowChart(yamlString) {
+  console.log(yamlString);
+  const { pods } = YAML.parse(yamlString);
+  return formatForFlowchart(pods, {});
 }
