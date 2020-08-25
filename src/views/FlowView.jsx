@@ -1,5 +1,6 @@
 import React from "react";
 import { cloneDeep } from "lodash";
+import Editor from "@monaco-editor/react";
 import { FlowChart } from "@mrblenny/react-flow-chart";
 import * as actions from "@mrblenny/react-flow-chart/src/container/actions";
 import { Container, Row, Card } from "shards-react";
@@ -11,14 +12,26 @@ import CommandBar from "../components/FlowChart/CommandBar";
 import Sidebar from "../components/FlowChart/Sidebar";
 import CustomNode from "../components/FlowChart/ChartNode";
 import CustomPort from "../components/FlowChart/NodePort";
-import { formatAsYAML, copyToClipboard } from "../helpers";
+import {
+  formatAsYAML,
+  copyToClipboard,
+  yamlStringToFlowChart,
+} from "../helpers";
 
 class FlowTab extends React.Component {
   constructor(props) {
     super(props);
     const chart = Store.getFlowchart();
     const banner = Store.getBanner("flow");
-    this.state = { chart, banner, showOverlay: false };
+    this.editorValueGetterRef = React.createRef();
+
+    this.state = {
+      chart,
+      banner,
+      showOverlay: false,
+      showYamlFlow: true,
+      isEditorReady: false,
+    };
 
     console.log("actions:", actions);
     this.stateActionCallbacks = Object.keys(actions).reduce((obj, key, idx) => {
@@ -156,64 +169,91 @@ class FlowTab extends React.Component {
       payload: { modal: "import" },
     });
   };
+  handleEditorDidMount = (_valueGetter) => {
+    this.editorValueGetterRef.current = _valueGetter;
+    this.setState({ isEditorReady: true });
+  };
+  toggleYamlVisual = () => {
+    this.setState((prevState) => ({
+      ...prevState,
+      showYamlFlow: !prevState.showYamlFlow,
+      chart: prevState.showYamlFlow
+        ? yamlStringToFlowChart(this.editorValueGetterRef.current())
+        : prevState.chart,
+    }));
+  };
 
   render = () => {
-    const { chart, banner, showOverlay } = this.state;
+    const { chart, banner, showOverlay, showYamlFlow } = this.state;
     return (
-      <Container fluid className="main-content-container px-0">
-        {banner && (
-          <div className="mr-4">
-            <div className={`mb-0 banner px-4 banner-${banner.theme}`}>
-              {banner.message}
-            </div>
-          </div>
-        )}
-        <div className="px-4">
-          <a href="/#" id="download-link" style={{ display: "hidden" }}>
-            download
-          </a>
-          <Row noGutters className="page-header py-4">
-            <PageTitle
-              title="Flow Design"
-              subtitle="Network"
-              className="text-sm-left mb-3"
+      <>
+        <button onClick={this.toggleYamlVisual}>Toggle View</button>
+        {showYamlFlow ? (
+          <Container fluid className="main-content-container px-0">
+            <Editor
+              height="90vh"
+              language="yaml"
+              value={formatAsYAML(chart)}
+              editorDidMount={this.handleEditorDidMount}
             />
-          </Row>
-          <div className="flow-container d-flex flex-column flex-md-row">
-            <Card className="chart-section-container p-1 mr-md-4 mb-4">
-              <CommandBar
-                copyChart={this.copyChartAsYAML}
-                importChart={this.showImportModal}
-                exportImage={this.exportImage}
-              />
-              <div className="chart-container">
-                <div
-                  className="capture-overlay"
-                  style={{ display: showOverlay ? "" : "none" }}
-                >
-                  <div className="capture-overlay-top"></div>
-                  <div className="capture-overlay-bottom"></div>
+          </Container>
+        ) : (
+          <Container fluid className="main-content-container px-0">
+            {banner && (
+              <div className="mr-4">
+                <div className={`mb-0 banner px-4 banner-${banner.theme}`}>
+                  {banner.message}
                 </div>
-                <FlowChart
+              </div>
+            )}
+            <div className="px-4">
+              <a href="/#" id="download-link" style={{ display: "hidden" }}>
+                download
+              </a>
+              <Row noGutters className="page-header py-4">
+                <PageTitle
+                  title="Flow Design"
+                  subtitle="Network"
+                  className="text-sm-left mb-3"
+                />
+              </Row>
+              <div className="flow-container d-flex flex-column flex-md-row">
+                <Card className="chart-section-container p-1 mr-md-4 mb-4">
+                  <CommandBar
+                    copyChart={this.copyChartAsYAML}
+                    importChart={this.showImportModal}
+                    exportImage={this.exportImage}
+                  />
+                  <div className="chart-container">
+                    <div
+                      className="capture-overlay"
+                      style={{ display: showOverlay ? "" : "none" }}
+                    >
+                      <div className="capture-overlay-top"></div>
+                      <div className="capture-overlay-bottom"></div>
+                    </div>
+                    <FlowChart
+                      chart={chart}
+                      Components={{ NodeInner: CustomNode, Port: CustomPort }}
+                      callbacks={this.stateActionCallbacks}
+                      config={{
+                        validateLink: this.validateLink,
+                      }}
+                    />
+                  </div>
+                </Card>
+                <Sidebar
                   chart={chart}
-                  Components={{ NodeInner: CustomNode, Port: CustomPort }}
-                  callbacks={this.stateActionCallbacks}
-                  config={{
-                    validateLink: this.validateLink,
-                  }}
+                  cancelChanges={this.cancelChanges}
+                  deleteSelection={this.deleteSelection}
+                  updateNode={this.updateNode}
+                  updateLink={this.updateLink}
                 />
               </div>
-            </Card>
-            <Sidebar
-              chart={chart}
-              cancelChanges={this.cancelChanges}
-              deleteSelection={this.deleteSelection}
-              updateNode={this.updateNode}
-              updateLink={this.updateLink}
-            />
-          </div>
-        </div>
-      </Container>
+            </div>
+          </Container>
+        )}
+      </>
     );
   };
 }
